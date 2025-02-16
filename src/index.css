@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+    background-color: rgb(229, 229, 229);
+    margin-top: 60px
+}
+
+#home-bg{
+    background-image: url("https://thumbs.dreamstime.com/z/digital-illustration-woman-headset-vibrant-colors-bokeh-background-profile-view-modern-technology-communication-digital-354337231.jpg?ct=jpeg");
+    background-size: cover;
+    height: 560px;
+    width: 100%;
+}
+
+@media(max-width: 640px){
+    #home-bg{
+        background-image: none;
+    }
+}
+
+.form_style{
+    @apply sm:min-w-[350px] flex flex-col gap-0 sm:gap-4
+}
+
+.card_style {
+    @apply w-full sm:max-w-[500px] min-w-[370px] px-5 sm:px-12  sm:py-4 pb-4 sm:pb-5 
+}
+
