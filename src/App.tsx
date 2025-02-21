@@ -3,25 +3,25 @@ import './App.css'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import SupportDashboard from './pages/Dashboard'
-import ProtectedRoute from './components/ProtectedRoute'
+import SupportDashboard from './pages/SupportDash'
 import Unauthorized from './pages/Unauthorised'
 import { useAuth } from './context/AuthContext'
+import UserDashboard from './pages/UserDash'
 
 const App = () => {
-  const { authorised } = useAuth()
+  const { role, authorised } = useAuth()
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/unauthorised' element={!authorised ? <Unauthorized />: <Navigate to="/"/>} />
+        <Route path='/unauthorised' element={!authorised ? <Unauthorized /> : <Navigate to="/" />} />
         <Route path='/' element={<Home />} />
-        <Route path='/login' element={!authorised ? <Login />: <Navigate to="/dashboard"/>} />
-        <Route path='/register' element={!authorised ? <Register />: <Navigate to="/dashboard"/>} />
+        <Route path='/login' element={!authorised ? <Login /> : <Navigate to="/dashboard" />} />
+        <Route path='/register' element={!authorised ? <Register /> : <Navigate to="/dashboard" />} />
         <Route path='/dashboard'
           element={
-            <ProtectedRoute roles={["agent", "customer"]}>
-              <SupportDashboard />
-            </ProtectedRoute>
+            role === "customer"
+              ? <UserDashboard />
+              : <SupportDashboard />
           } />
       </Routes>
     </BrowserRouter>

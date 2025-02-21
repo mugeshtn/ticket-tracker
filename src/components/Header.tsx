@@ -20,15 +20,7 @@ export default function Header() {
   const { userId } = useAuth()
 
   const menuItems = [
-    "Login",
-    "Profile",
     "Dashboard",
-    "Activity",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
-    "Help & Feedback",
     "Log Out",
   ];
 
@@ -59,12 +51,11 @@ export default function Header() {
           {userId ? (
             <>
               <div className="flex justify-between min-w-[300px] items-center">
-                <NavbarItem isActive>
-                  <Link aria-current="page" href="/dashboard" className="text-white">
-                    Dashboard
-                  </Link>
-                </NavbarItem>
-                <Button as={Link} onClick={logoutUser} className="bg-green-600 text-white" variant="flat">
+                <Link aria-current="page" href="/dashboard" className="text-white">
+                  Dashboard
+                </Link>
+
+                <Button as={Link} onPress={logoutUser} className="bg-green-600 text-white" variant="flat">
                   Logout
                 </Button>
               </div>
@@ -91,7 +82,7 @@ export default function Header() {
               color={
                 index === 2 ? "warning" : index === menuItems.length - 1 ? "danger" : "foreground"
               }
-              href="/login"
+              href={`/${item}`}
               size="lg"
             >
               {item}

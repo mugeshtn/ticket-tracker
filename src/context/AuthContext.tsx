@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
-import { Loader } from "lucide-react";
+import {  Loader } from "lucide-react";
 
 
 interface AuthContextType {
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     isLoading && (
         <div className="flex justify-center items-center h-full">
-            <Loader size="lg" /> {/* You can customize size */}
+            <Loader size="lg"  fill="white"/> 
         </div>
     )
 

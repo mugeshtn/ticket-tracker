@@ -4,7 +4,7 @@ import AuthCard from '../components/AuthCard'
 const Register = () => {
   return (
     <>
-        <Header signIn={false}/>
+        <Header/>
         <AuthCard register={true}/>
     </>
   )

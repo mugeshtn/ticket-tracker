@@ -1,10 +1,9 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth"
 import { auth, db } from "../firebaseConfig"
 import { showToast } from "../utils/showToast"
-import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, query, QuerySnapshot, setDoc, where } from "firebase/firestore"
-import { ITicket } from "../utils/constants"
+import { collection, doc, getDoc, setDoc } from "firebase/firestore"
 
-const ticketCollectionRef = collection(db, "tickets")
+
 const userCollectionRef = collection(db, "users")
 
 export const registerUser = async (name: string, email: string, password: string, role: string = "customer") => {
@@ -16,7 +15,6 @@ export const registerUser = async (name: string, email: string, password: string
         await setDoc(doc(userCollectionRef, userCredentials.user.uid), {
             name, email, role
         });
-
         return { uid: userCredentials.user.uid, role }
     } catch (err: any) {
         throw new Error(err.message)
@@ -47,51 +45,5 @@ export const logoutUser = async () => {
     }
 }
 
-export const formDataSubmit = async (data: any) => {
-    try {
-        // let fileUrl = "";
-
-        // if (file && file.size > 0) {
-        //     const fileRef = ref(storage, `/ticket-files/${file.name}`);
-        //     await uploadBytes(fileRef, file);
-        //     fileUrl = await getDownloadURL(fileRef);
-        // }
-        const docData = await addDoc(ticketCollectionRef, data)
-        showToast("Ticket submission successful", "success")
-        return docData
-    } catch (error: any) {
-        showToast(error.message || "Ticket submission failed", 'error')
-    }
-}
 
 
-export const getUserTickets = (userId: string, setTickets: React.Dispatch<React.SetStateAction<ITicket[] | undefined>>)=> {
-    const ticketQuery = query(ticketCollectionRef, where("userId", "==", userId))
-    
-    const unsubscribe = onSnapshot(ticketQuery, (querySnapshot) => {
-
-    const updatedTickets:ITicket[] = [];
-
-    querySnapshot.docs.forEach(doc => {
-        const data = doc.data()
-
-        updatedTickets.push({
-            id: doc.id,
-            title: data.title,
-            description: data.description,
-            priority: data.priority,
-            category: data.category,
-            dateOfIssue: data.dateOfIssue,
-            phone: data.phone,
-            contactEmail: data.contactEmail,
-            contact: data.contact,
-            urgent: data.urgent,
-            file: data.file,
-            userId: data.userId
-        })
-    })
-    console.log(updatedTickets)
-    setTickets(updatedTickets)
-    })
-    return unsubscribe;
-}

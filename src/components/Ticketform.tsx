@@ -1,23 +1,21 @@
 import { Input, Textarea, Select, SelectItem, Button, Form, Divider } from "@heroui/react";
 import { X, Plus } from "lucide-react";
-import { formDataSubmit } from "../api/authApi";
-import { useNavigate } from "react-router-dom";
+import { ticketDataSubmit } from "../api/tickets";
 import { useAuth } from "../context/AuthContext";
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useState } from "react";
+import { formTicketSchema } from "../utils/constants";
+import { Timestamp } from "firebase/firestore";
 
 
 const Ticketform = ({ onClose }: { onClose: () => void }) => {
-
-    const navigate = useNavigate()
     const { userId } = useAuth()
     const [captcha, setCaptcha] = useState(false)
 
-    const onCaptchaChange = (value: String | null) =>{
-        console.log(value)
-        if(value){
+    const onCaptchaChange = (value: String | null) => {
+        if (value) {
             setCaptcha(true)
-        }else{
+        } else {
             setCaptcha(false)
         }
     }
@@ -30,30 +28,36 @@ const Ticketform = ({ onClose }: { onClose: () => void }) => {
         const formData = new FormData(form)
         const data = Object.fromEntries(formData.entries())
         const file = data.attachment as File;
+        const fileName = file.name
         const details = {
-            title: data.title || "",
-            description: data.description || "",
-            priority: data.priority || "",
-            category: data.category || "",
-            dateOfIssue: data.date || "",
-            phone: data.phone || "",
-            contactEmail: data.contactEmail || "",
-            contact: data.contact || "",
-            urgent: formData.has("urgent") ? true : false,
-            file: file.size > 0 ? file.name : "",
-            userId: userId || ""
+            title: data.title,
+            description: data.description,
+            priority: data.priority,
+            category: data.category,
+            contactEmail: data.contactEmail,
+            file: fileName,
+            status: "New",
+            userId: userId,
+            createdAt: new Date().toLocaleString()
         }
 
-        await formDataSubmit(details)
+        const parsedForm = formTicketSchema.safeParse(details)
+
+        if (parsedForm.success) {
+            await ticketDataSubmit(details)
+        } else {
+            console.log(parsedForm.error.errors)
+        }
+
         form.reset()
-        navigate(-1)
+        onClose()
     }
 
     return (
         <div className="flex justify-center items-center min-w-[330px] sm:min-w-0">
             <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg sm:p-8 py-6 px-6 sm:px-20 relative">
                 <h2 className="text-lg sm:text-4xl pt-5 sm:pt-4  font-bold mb-4">Ticket Submission Form</h2>
-                <Button className="bg-red-600 text-white absolute top-2 right-2 sm:top-5 sm:right-4" size="sm" onClick={onClose} startContent={<X />}></Button>
+                <Button className="bg-red-600 text-white absolute top-2 right-2 sm:top-5 sm:right-4" size="sm" onPress={onClose} startContent={<X />}></Button>
                 <Divider />
                 <Form className="space-y-6 pb-10" onSubmit={handleSubmit} validationBehavior="native">
                     <Input aria-label="title"
@@ -107,7 +111,7 @@ const Ticketform = ({ onClose }: { onClose: () => void }) => {
                         }}
                     />
 
-                    <Input type="file"  name="attachment" aria-label="attachment" />
+                    <Input type="file" name="attachment" aria-label="attachment" />
 
                     <ReCAPTCHA
                         sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
