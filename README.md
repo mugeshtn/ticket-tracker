@@ -16,7 +16,7 @@ Ticket tracker is a web-based platform for managing customer support tickets eff
 ## Tech Stack
 - **Frontend**: React (Vite), TypeScript, Tailwind CSS, HeroUI
 - **Backend**: Firebase Authentication & Firestore
-- **Hosting**: Firebase Hosting (or other platforms)
+- **Hosting**: Firebase Hosting
 
 ## Installation & Setup
 
